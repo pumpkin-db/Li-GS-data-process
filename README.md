@@ -23,7 +23,7 @@ conda activate <安装路径>
 ### 克隆项目
 
 ```bat
-git clone <项目地址>
+git clone https://github.com/pumpkin-db/Li-GS-data-process.git
 cd Li-GS_data_process
 ```
 
