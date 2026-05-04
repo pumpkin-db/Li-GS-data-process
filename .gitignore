@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Conda 环境（体积大，不上传）
+envs/
+
+# 所有输出（点云、图像、COLMAP 文件）
+output/
+
+# 诊断脚本生成的图片
+debug_projection_*.jpg
+*_sift.jpg
+
+# 本地教程文档（存放在 obsidian，不上传）
+GITHUB_GUIDE.md
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini

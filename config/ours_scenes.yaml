@@ -1,0 +1,48 @@
+# 自采数据集配置
+# 用于 MID360 手持激光雷达采集的数据处理
+
+scenes:
+  20260418035854_ours:
+    # 核心输入（必需）
+    pointcloud: "E:/_cloud/20260418035854_ours_1dai_over/LAS_rgb"
+    images: "E:/_cloud/20260418035854_ours_1dai_over/CAMERA/camera1"
+    poses: "E:/_cloud/20260418035854_ours_1dai_over/POS/camera_pos.cam"
+    camera_intrinsic: "E:/_cloud/20260418035854_ours_1dai_over/CALIBRATION_CAMERA/CAMERA_698802819.yaml"
+    # 参数设置
+    projection_resolution: [1800, 1800]  # 每个投影面分辨率
+    image_extension: ".jpg"
+    start_index: 1
+    end_index: 146
+
+  20260418035854_ours_1dai_over222:
+    pointcloud: "E:/_cloud/20260418035854_ours_1dai_over222/LAS_Rgb"
+    images: "E:/_cloud/20260418035854_ours_1dai_over222/CAMERA/camera1"
+    poses: "E:/_cloud/20260418035854_ours_1dai_over222/POS/20260420_193411/camera_pos.cam"
+    camera_intrinsic: "E:/_cloud/20260418035854_ours_1dai_over222/CALIBRATION_CAMERA/CAMERA_698802819.yaml"
+
+    projection_resolution: [ 1800, 1800 ]  # 每个投影面分辨率
+    image_extension: ".jpg"
+    start_index: 6
+    end_index: 150
+
+  20260421084017_ours-3:
+    pointcloud: "E:/_cloud/20260421084017_ours-3/LAS_Rgb/output_voxel"
+    images: "E:/_cloud/20260421084017_ours-3/CAMERA/camera1"
+    poses: "E:/_cloud/20260421084017_ours-3/POS/20260421_170346/camera_pos.cam"
+    camera_intrinsic: "E:/_cloud/20260421084017_ours-3/CALIBRATION_CAMERA/CAMERA_698802819.yaml"
+
+    projection_resolution: [ 1800, 1800 ]  # 每个投影面分辨率
+    image_extension: ".jpg"
+    start_index: 7
+    end_index: 350
+  606_ours:
+    pointcloud: "E:/_cloud/606/LAS_Rgb/output_voxel"
+    images: "E:/_cloud/606/CAMERA/camera1"
+    poses: "E:/_cloud/606/POS/20260329_163319/camera_pos.cam"
+    camera_intrinsic: "E:/_cloud/606/CALIBRATION_CAMERA/CAMERA_698802819.yaml"
+
+    projection_resolution: [ 1800, 1800 ]  # 每个投影面分辨率
+    image_extension: ".jpg"
+    start_index: 6
+    end_index: 267
+

@@ -1,0 +1,17 @@
+# Li-GS 数据处理依赖
+# 安装命令: pip install -r requirements.txt
+
+numpy>=1.21.0
+scipy>=1.7.0
+pyyaml>=5.4.0
+
+# 点云读取（LAS 格式）
+laspy>=2.0.0
+lazrs          # 压缩 LAS 支持（可选，部分数据集需要）
+
+# OpenCV 必须用 contrib 版本（包含 SIFT 等非免费算法）
+# 注意：不能与 opencv-python 同时安装
+opencv-contrib-python>=4.5.0
+
+# 点云处理
+open3d>=0.16.0
