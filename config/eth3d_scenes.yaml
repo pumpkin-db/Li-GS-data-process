@@ -11,7 +11,7 @@ scenes:
     # 激光扫描点云
     scan: "D:/ETH3D/courtyard_scan_clean/courtyard/scan_clean/scan1.ply"
     # 去畸变图像目录
-    images: "D:/ETH3D/courtyard_dslr_undistorted/courtyard/images/dslr_images_undistorted"
+    images: "D:/ETH3D/courtyard_dslr_undistorted/courtyard/images/dslr_images_compressed"
     # COLMAP 相机参数
     cameras: "D:/ETH3D/courtyard_dslr_undistorted/courtyard/dslr_calibration_undistorted/cameras.txt"
     # COLMAP 图像位姿
@@ -23,7 +23,7 @@ scenes:
   # ==================== facade 场景 ====================
   facade:
     scan: "D:/ETH3D/facade_scan_clean/facade/scan_clean/scan1.ply"
-    images: "D:/ETH3D/facade_dslr_undistorted/facade/images/dslr_images_undistorted"
+    images: "D:/ETH3D/facade_dslr_undistorted/facade/images/dslr_images_compressed"
     cameras: "D:/ETH3D/facade_dslr_undistorted/facade/dslr_calibration_undistorted/cameras.txt"
     images_txt: "D:/ETH3D/facade_dslr_undistorted/facade/dslr_calibration_undistorted/images.txt"
 

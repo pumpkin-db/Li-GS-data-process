@@ -16,6 +16,16 @@ Li-GS ETH3D 动态体素滤波入口脚本
         images_txt: "path/to/images.txt"
 """
 
+'''
+2026.5.12 bug修复：
+scan1.ply 在扫描仪自身的坐标系中，而 images.txt 里的相机外参在世界坐标系中——两者根本不对齐，投影完全是错的。
+
+scan_alignment.mlp 的作用：
+它是 MeshLab 项目文件（XML），记录每个原始扫描到世界坐标系的 4×4 变换矩阵
+对 courtyard 的 scan1.ply，矩阵约为小旋转（~4.8°）+ 平移 (3.82, -7.24, 1.87) 米
+不应用这个变换，投影后点云会出现在图像的完全错误位置
+'''
+
 import argparse
 import os
 import sys
@@ -30,7 +40,9 @@ from voxel_filtering_eth3d import (
     load_colmap_cameras,
     load_colmap_images,
     build_camera_matrix,
-    save_colmap_points3d
+    save_colmap_points3d,
+    load_scan_alignment,
+    apply_scan_alignment,
 )
 import open3d as o3d
 import numpy as np
@@ -144,7 +156,19 @@ def process_scene(
     pcd = o3d.io.read_point_cloud(scan_path)
     print(f"  点云点数: {len(pcd.points)}")
     print(f"  点云有颜色: {pcd.has_colors()}")
-    
+
+    # 应用 scan_alignment 变换（ETH3D 原始扫描在扫描仪坐标系，需变换到世界坐标系）
+    # scan_alignment.mlp 与扫描 PLY 文件位于同一目录
+    scan_dir = os.path.dirname(os.path.abspath(scan_path))
+    mlp_path = os.path.join(scan_dir, 'scan_alignment.mlp')
+    if os.path.exists(mlp_path):
+        print(f"  检测到 scan_alignment.mlp，应用扫描仪→世界坐标变换...")
+        alignment_matrix = load_scan_alignment(mlp_path, os.path.basename(scan_path))
+        apply_scan_alignment(pcd, alignment_matrix)
+        print(f"  变换矩阵:\n{alignment_matrix}")
+    else:
+        print(f"  未找到 scan_alignment.mlp（{mlp_path}），跳过坐标对齐")
+
     # 加载相机参数
     cameras = load_colmap_cameras(cameras_path)
     print(f"  相机数量: {len(cameras)}")
@@ -323,7 +347,7 @@ def main():
     parser.add_argument(
         '--feature-ratio',
         type=float,
-        default=0.05,
+        default=0.03,
         help='Feature-rich 区域比例 (默认: 0.05 = 5%)'
     )
 
@@ -358,7 +382,7 @@ def main():
     parser.add_argument(
         '--max-features',
         type=int,
-        default=2000,
+        default=1000,
         help='SIFT 最大特征点数量 (默认: 500, 0表示无限制)'
     )
     
@@ -372,7 +396,7 @@ def main():
     parser.add_argument(
         '--max-workers',
         type=int,
-        default=2,
+        default=3,
         help='并行处理图像的线程数 (默认: 4, 设为1禁用并行)'
     )
     

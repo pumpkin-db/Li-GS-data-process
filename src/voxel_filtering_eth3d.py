@@ -9,6 +9,7 @@ import numpy as np
 import cv2
 import open3d as o3d
 import os
+import xml.etree.ElementTree as ET
 from typing import List, Tuple, Dict
 from scipy.stats import gaussian_kde
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -694,6 +695,56 @@ def build_camera_matrix(camera_params: Dict) -> np.ndarray:
     ])
     
     return K
+
+
+def load_scan_alignment(mlp_path: str, scan_filename: str) -> np.ndarray:
+    """
+    从 ETH3D scan_alignment.mlp 文件中提取指定扫描文件的对齐变换矩阵。
+
+    scan_alignment.mlp 是 MeshLab 项目文件（XML格式），包含将每个原始扫描
+    从扫描仪坐标系变换到世界/COLMAP坐标系的 4x4 矩阵。
+
+    scan_clean.ply 不存在时，需直接使用 scan1.ply/scan2.ply，并手动应用此矩阵。
+
+    Args:
+        mlp_path:      scan_alignment.mlp 文件的完整路径
+        scan_filename: 目标扫描文件名，如 'scan1.ply'（仅文件名，不含路径）
+
+    Returns:
+        4x4 numpy 矩阵，将点从扫描仪坐标系变换到世界坐标系
+    """
+    tree = ET.parse(mlp_path)
+    root = tree.getroot()
+
+    target_name = os.path.basename(scan_filename)
+    for mesh in root.iter('MLMesh'):
+        label = mesh.get('label', '') or mesh.get('filename', '')
+        if os.path.basename(label) == target_name:
+            matrix_elem = mesh.find('MLMatrix44')
+            if matrix_elem is not None:
+                values = [float(x) for x in matrix_elem.text.strip().split()]
+                return np.array(values, dtype=np.float64).reshape(4, 4)
+
+    raise ValueError(f"在 {mlp_path} 中未找到 '{target_name}' 的变换矩阵")
+
+
+def apply_scan_alignment(pcd: o3d.geometry.PointCloud, alignment_matrix: np.ndarray) -> o3d.geometry.PointCloud:
+    """
+    将 4x4 对齐矩阵应用到点云（in-place），使点云从扫描仪坐标系进入世界坐标系。
+
+    Args:
+        pcd:              Open3D 点云对象
+        alignment_matrix: 4x4 变换矩阵（来自 load_scan_alignment）
+
+    Returns:
+        变换后的同一点云对象
+    """
+    points = np.asarray(pcd.points)
+    ones = np.ones((len(points), 1), dtype=np.float64)
+    points_h = np.hstack([points, ones])                  # (N, 4)
+    points_world = (alignment_matrix @ points_h.T).T[:, :3]  # (N, 3)
+    pcd.points = o3d.utility.Vector3dVector(points_world)
+    return pcd
 
 
 def process_eth3d_scene(

@@ -64,13 +64,13 @@ def _make_perspective_K(w: int, h: int, fov_deg: float) -> np.ndarray:
 # ============================================================
 
 # 输入：鱼眼图像目录
-IMAGE_DIR = r'E:\_cloud\house\camera1'
+IMAGE_DIR = r'E:\_cloud\art_house_2\camera1'
 IMAGE_EXTENSION = '.jpg'         # 图像文件扩展名
 
 # 输入：相机内参文件路径
 #   .yaml → OCamCalib YAML 格式（含 camToWorld1, principal1 等）
 #   .txt  → OCamCalib calib_results.txt 格式
-INTRINSIC_PATH = r'E:\_cloud\house\20260428003947_gs\CALIBRATION_CAMERA\CAMERA_698802819.yaml'
+INTRINSIC_PATH = r'E:\_cloud\art_house_2\CALIBRATION_CAMERA\CAMERA_698802819.yaml'
 
 # 输出参数
 OUTPUT_SIZE = (3600, 3600)      # 每面输出分辨率 (width, height)
